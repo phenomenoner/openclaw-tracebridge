@@ -46,3 +46,4 @@ Start collecting useful traces immediately with minimal runtime risk.
 - Correctly split key runtime rows into `tool.call`, `tool.result`, `cron.fire`, `system.event`
 - `profile=lean` avoids raw payload bloat by default
 - Bridge export writes deterministic rows for `messages` and `triplets` formats
+- Replay v0 tooling (`replay-split`, `replay-manifest`) is available for deterministic A/B scaffolding

@@ -63,6 +63,20 @@
   - skip-accounting counters for missing/unpaired events
 - Added report: `docs/DOGFOOD_AGENT_LIGHTNING_BRIDGE_2026-02-09.md`.
 
+### Research pass (fail-eager)
+- Attempted direct X exploration via `bird`, blocked by missing auth tokens.
+- Switched to GitHub/docs/web snippets and captured findings in:
+  - `docs/RESEARCH_AGENT_LIGHTNING_USAGE.md`
+
+### Phase B start: deterministic replay tooling
+- Added `replay-split` CLI command:
+  - deterministic A/B split by hash(key, seed)
+  - optional deterministic sampling (`sample-size`, `sample-seed`)
+- Added `replay-manifest` CLI command:
+  - row count + sha256 for reproducibility checks
+- Added replay module and tests.
+- Added `docs/REPLAY_CONTRACT_V0.md`.
+
 ### Next
-- Phase B: replay contract and deterministic A/B harness.
 - Add first Agent Lightning consumer smoke (minimal trainer-side ingestion check).
+- Wire replay outputs into benchmark-style A/B reporting.

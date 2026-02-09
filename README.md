@@ -40,6 +40,13 @@ uv run --python 3.13 --group dev openclaw-tracebridge export-agent-lightning \
 
 # optional smoke script
 bash scripts/smoke_agent_lightning_bridge.sh
+
+# deterministic replay split
+uv run --python 3.13 --group dev openclaw-tracebridge replay-split \
+  --input traces/<run>/agent_lightning_messages.jsonl \
+  --out-a traces/<run>/replay_a.jsonl \
+  --out-b traces/<run>/replay_b.jsonl \
+  --seed 42 --split-ratio 0.5
 ```
 
 ## Docs
@@ -50,6 +57,8 @@ bash scripts/smoke_agent_lightning_bridge.sh
 - Landscape + rationale: `docs/LANDSCAPE_AND_RATIONALE.md`
 - Agent Lightning bridge spec: `docs/AGENT_LIGHTNING_BRIDGE_SPEC.md`
 - Agent Lightning bridge dogfood: `docs/DOGFOOD_AGENT_LIGHTNING_BRIDGE_2026-02-09.md`
+- Agent Lightning usage research snapshot: `docs/RESEARCH_AGENT_LIGHTNING_USAGE.md`
+- Replay contract v0: `docs/REPLAY_CONTRACT_V0.md`
 
 ## Status
 
@@ -57,5 +66,6 @@ bash scripts/smoke_agent_lightning_bridge.sh
 - Phase A.1 live: better kind split (`cron.fire`, `system.event`, `tool.call`)
 - Import profiles: `lean|bridge|debug` (`lean` default)
 - Phase A.2 pivot started: Agent Lightning bridge exporter (`messages|triplets`)
+- Phase B started: deterministic replay tooling (`replay-split`, `replay-manifest`)
 - Dogfood run validated on real OpenClaw session JSONL
 - Repo is private and in active hacking-mode bootstrap

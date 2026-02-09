@@ -11,6 +11,7 @@ from .exporters.agent_lightning import (
     export_to_agent_lightning_triplets,
 )
 from .io import iter_events
+from .replay import build_replay_manifest, split_jsonl_for_replay
 from .schema import RunMeta, new_run_id
 
 
@@ -89,6 +90,43 @@ def _cmd_export_agent_lightning(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_replay_split(args: argparse.Namespace) -> int:
+    summary = split_jsonl_for_replay(
+        input_path=Path(args.input),
+        out_a_path=Path(args.out_a),
+        out_b_path=Path(args.out_b),
+        split_ratio=args.split_ratio,
+        seed=args.seed,
+        key_field=args.key_field,
+        sample_size=args.sample_size,
+        sample_seed=args.sample_seed,
+    )
+    print(
+        json.dumps(
+            {
+                "ok": True,
+                "input_rows": summary.input_rows,
+                "sampled_rows": summary.sampled_rows,
+                "out_a_rows": summary.out_a_rows,
+                "out_b_rows": summary.out_b_rows,
+                "out_a": args.out_a,
+                "out_b": args.out_b,
+            },
+            ensure_ascii=False,
+        )
+    )
+    return 0
+
+
+def _cmd_replay_manifest(args: argparse.Namespace) -> int:
+    manifest = build_replay_manifest(Path(args.input))
+    out_path = Path(args.out)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(json.dumps({"ok": True, "out": str(out_path), "rows": manifest["rows"]}, ensure_ascii=False))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="openclaw-tracebridge")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -123,6 +161,22 @@ def build_parser() -> argparse.ArgumentParser:
     p_export.add_argument("--format", choices=["messages", "triplets"], default="messages")
     p_export.add_argument("--reward-mode", choices=["none", "heuristic-basic"], default="none")
     p_export.set_defaults(func=_cmd_export_agent_lightning)
+
+    p_split = sub.add_parser("replay-split", help="Create deterministic A/B replay splits from a JSONL dataset")
+    p_split.add_argument("--input", required=True)
+    p_split.add_argument("--out-a", required=True)
+    p_split.add_argument("--out-b", required=True)
+    p_split.add_argument("--split-ratio", type=float, default=0.5)
+    p_split.add_argument("--seed", type=int, default=42)
+    p_split.add_argument("--key-field", default="id")
+    p_split.add_argument("--sample-size", type=int)
+    p_split.add_argument("--sample-seed", type=int, default=42)
+    p_split.set_defaults(func=_cmd_replay_split)
+
+    p_manifest = sub.add_parser("replay-manifest", help="Generate manifest (rows + sha256) for replay input")
+    p_manifest.add_argument("--input", required=True)
+    p_manifest.add_argument("--out", required=True)
+    p_manifest.set_defaults(func=_cmd_replay_manifest)
 
     return parser
 
