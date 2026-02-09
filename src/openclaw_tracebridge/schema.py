@@ -16,6 +16,7 @@ class EventKind(StrEnum):
     MEMORY_READ = "memory.read"
     MEMORY_WRITE = "memory.write"
     CRON_FIRE = "cron.fire"
+    SYSTEM_EVENT = "system.event"
     HEARTBEAT = "heartbeat"
     NOTE = "note"
 

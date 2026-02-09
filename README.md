@@ -26,14 +26,24 @@ Import one OpenClaw session into normalized events:
 uv run --python 3.13 --group dev openclaw-tracebridge import-openclaw-session \
   --session-jsonl ~/.openclaw/agents/main/sessions/<session>.jsonl \
   --out traces/<run>/events.jsonl \
-  --run-id <run>
+  --run-id <run> \
+  --profile lean
 
 uv run --python 3.13 --group dev openclaw-tracebridge stats \
   --events traces/<run>/events.jsonl
 ```
 
+## Docs
+
+- Phase A spec: `docs/PHASE_A_V0_SPEC.md`
+- Devlog: `docs/DEVLOG.md`
+- Dogfood report: `docs/DOGFOOD_2026-02-09.md`
+- Landscape + rationale: `docs/LANDSCAPE_AND_RATIONALE.md`
+
 ## Status
 
 - Phase A scaffold is live (`tracebridge.event.v1`, importer, stats)
+- Phase A.1 live: better kind split (`cron.fire`, `system.event`, `tool.call`)
+- `profile=lean|debug` import mode is available (`lean` default)
 - Dogfood run validated on real OpenClaw session JSONL
 - Repo is private and in active hacking-mode bootstrap

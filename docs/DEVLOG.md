@@ -26,7 +26,23 @@
 - Lint: `ruff check .` passed
 - Dogfood import on real OpenClaw session JSONL completed successfully.
 
+### Phase A.1 completed
+- Improved event-kind split in importer:
+  - `tool.call` (including assistant-side toolCall payload)
+  - `tool.result`
+  - `cron.fire`
+  - `system.event`
+- Added importer profile flag:
+  - `--profile lean` (default)
+  - `--profile debug` (adds `content` and raw row)
+- Added tests for kind split and debug profile.
+
+### Research insight captured
+- Added `docs/LANDSCAPE_AND_RATIONALE.md`:
+  - what adjacent projects exist,
+  - why TraceBridge is still needed,
+  - why not just install Agent Lightning for this phase.
+
 ### Next
-- Phase A.1: improve event-kind mapping for tool calls and cron/system rows.
-- Phase A.2: add adapter output profile (`lean|debug`) and schema-level capability flags.
-- Phase A.3: produce first replay-compatible export contract for Phase B.
+- Phase A.2: schema-level capability flags and compatibility notes.
+- Phase A.3: first replay-compatible export contract for Phase B.

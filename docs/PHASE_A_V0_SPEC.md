@@ -10,11 +10,24 @@ Start collecting useful traces immediately with minimal runtime risk.
   - OpenClaw session JSONL import
   - basic stats summary
 - Lean-by-default payload (store lengths/metadata, not full content)
+- Phase A.1 classification split:
+  - `tool.call` (including assistant message toolCall payloads)
+  - `tool.result`
+  - `cron.fire`
+  - `system.event`
+- Import profile controls:
+  - `profile=lean` (default)
+  - `profile=debug` (include content + raw row)
 
 ## Non-goals
 - No online RL loop
 - No heavy backend requirement
 - No intrusive OpenClaw core patches in v0
+
+## Positioning
+- Adjacent projects exist (memory layers, observability stacks, training frameworks), but they do not replace an OpenClaw-native runtime adapter.
+- TraceBridge focuses on immediate OpenClaw operability and token-efficient capture first, then replay and optional integration bridges.
+- See `docs/LANDSCAPE_AND_RATIONALE.md` for detail.
 
 ## License posture
 - Agent Lightning reference repo is MIT.
@@ -26,3 +39,5 @@ Start collecting useful traces immediately with minimal runtime risk.
 - Produce valid `tracebridge.event.v1` rows
 - Deterministic sequence IDs
 - Summaries include event count, rough token/cost fields (if present)
+- Correctly split key runtime rows into `tool.call`, `tool.result`, `cron.fire`, `system.event`
+- `profile=lean` avoids raw payload bloat by default

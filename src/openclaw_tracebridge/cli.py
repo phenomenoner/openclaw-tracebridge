@@ -33,6 +33,7 @@ def _cmd_import_session(args: argparse.Namespace) -> int:
         run_id=run_id,
         include_content=args.include_content,
         start_sequence_id=args.start_sequence_id,
+        profile=args.profile,
     )
     print(json.dumps({"ok": True, "run_id": run_id, "events_written": n, "out": str(out)}))
     return 0
@@ -70,7 +71,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_import.add_argument("--session-jsonl", required=True)
     p_import.add_argument("--out", required=True)
     p_import.add_argument("--run-id")
-    p_import.add_argument("--include-content", action="store_true")
+    p_import.add_argument("--profile", choices=["lean", "debug"], default="lean")
+    p_import.add_argument("--include-content", action="store_true", help="Force include text content payload")
     p_import.add_argument("--append", action="store_true", help="Append to existing output instead of overwrite")
     p_import.add_argument("--start-sequence-id", type=int, default=1)
     p_import.set_defaults(func=_cmd_import_session)
