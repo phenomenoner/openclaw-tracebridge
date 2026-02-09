@@ -115,3 +115,11 @@
 ### Next
 - Wire replay outputs into benchmark-style A/B reporting.
 - Add richer policy families and task-specific rewards beyond keyword heuristics.
+
+### Upstream linkage addendum (#12660 / #12633)
+- Contributed architecture feedback to OpenClaw #12660 (context-provider slot proposal):
+  - emphasized fail-open fallback, provider timeout budgets, and shadow-mode rollout before cutover.
+  - this directly matches TraceBridge’s replay/split/manifest path for low-risk A/B validation.
+- Contributed stability feedback to OpenClaw #12633 (session indexing skip bug):
+  - highlighted that cold-start correctness and session-heavy timeout resilience should be treated as separate failure classes.
+  - implication for TraceBridge: maintain replay-ready artifacts so upstream fixes can be validated against repeatable slices.
