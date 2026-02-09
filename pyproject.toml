@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
 [project]
 name = "openclaw-tracebridge"
 version = "0.1.0a0"
@@ -24,3 +28,6 @@ addopts = "-q"
 [tool.ruff]
 line-length = 110
 target-version = "py313"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/openclaw_tracebridge"]

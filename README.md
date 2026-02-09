@@ -17,9 +17,23 @@ OpenClaw TraceBridge is a **Python-first, low-overhead trace adapter** project f
 ## Quickstart
 
 ```bash
-uv run --python 3.13 -- openclaw-tracebridge --help
+uv run --python 3.13 --group dev openclaw-tracebridge --help
+```
+
+Import one OpenClaw session into normalized events:
+
+```bash
+uv run --python 3.13 --group dev openclaw-tracebridge import-openclaw-session \
+  --session-jsonl ~/.openclaw/agents/main/sessions/<session>.jsonl \
+  --out traces/<run>/events.jsonl \
+  --run-id <run>
+
+uv run --python 3.13 --group dev openclaw-tracebridge stats \
+  --events traces/<run>/events.jsonl
 ```
 
 ## Status
 
-This repo is currently private and in active hacking-mode bootstrap.
+- Phase A scaffold is live (`tracebridge.event.v1`, importer, stats)
+- Dogfood run validated on real OpenClaw session JSONL
+- Repo is private and in active hacking-mode bootstrap
