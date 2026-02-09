@@ -70,6 +70,7 @@ bash scripts/run_phase1_shadow_cycle.sh
 - `docs/AGENT_LIGHTNING_CONSUMER_SMOKE.md`
 - `docs/REAL_OPTIMIZATION_LOOP.md`
 - `docs/PHASED_ADOPTION_PLAN.md`
+- `docs/PUBLIC_CHECKLIST_2026-02-09.md`
 
 Dogfood reports are under `docs/DOGFOOD_*.md`.
 

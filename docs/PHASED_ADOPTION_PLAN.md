@@ -25,6 +25,7 @@ Goal: run offline train/eval loop without changing production behavior.
 - No runtime-hook failures
 - Stable positive uplift (not necessarily large), with no data integrity regressions
 - Reaction feedback harvesting running daily and auditable
+- Chunked-message label policy documented and applied in training joins
 
 ## Phase 2 — Offline robustness
 Goal: improve reward quality and behavior diversity.
@@ -33,6 +34,7 @@ Goal: improve reward quality and behavior diversity.
 - Add behavior variants (prompt/tool/response policies)
 - Introduce richer task-grounded reward signals
 - Add ablation report over fixed replay set
+- Apply weak-supervision join rules for chunked Telegram messages (last-chunk reaction labels full batch)
 
 Exit criteria:
 - Clear winner policy on fixed benchmark

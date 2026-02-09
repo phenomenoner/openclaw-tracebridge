@@ -22,6 +22,14 @@ Goal: lock emoji → score mapping so human intent and training signal stay alig
 ## Why this matters
 Some emoji have visually similar variants (e.g., ❤ vs ❤️). We normalize and map both.
 
+## Chunked-message policy (important)
+Telegram may split one long assistant response into multiple consecutive messages. In that case, CK may react only to the **last chunk** while evaluating the **whole batch**.
+
+Training-label policy:
+- Treat reaction on the last chunk as feedback for the full assistant batch.
+- During dataset join, propagate that label backward across adjacent assistant chunks in the same response window.
+- Keep original reacted `message_id` as anchor for auditability.
+
 ## Audit outputs
 - Raw ledger: `memory/feedback/telegram-reactions.jsonl`
 - Mapping file: `memory/feedback/reaction-mapping.json`
