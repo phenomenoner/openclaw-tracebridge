@@ -1,0 +1,26 @@
+[project]
+name = "openclaw-tracebridge"
+version = "0.1.0a0"
+description = "Low-overhead trace adapter + replay bus primitives for OpenClaw"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+  "pydantic>=2.7",
+]
+
+[project.scripts]
+openclaw-tracebridge = "openclaw_tracebridge.cli:main"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.9",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py313"
