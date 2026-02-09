@@ -34,6 +34,7 @@
   - `system.event`
 - Added importer profile flag:
   - `--profile lean` (default)
+  - `--profile bridge` (adds `content`, no raw payload)
   - `--profile debug` (adds `content` and raw row)
 - Added tests for kind split and debug profile.
 
@@ -43,6 +44,25 @@
   - why TraceBridge is still needed,
   - why not just install Agent Lightning for this phase.
 
+### Phase A.2 pivot started (Agent Lightning bridge)
+- Added run-level capability flags in `RunMeta`.
+- Added `export-agent-lightning` CLI subcommand.
+- Added exporter module for:
+  - `messages` dataset (`tracebridge.agent_lightning.messages.v0`)
+  - `triplets` dataset (`tracebridge.agent_lightning.triplet.v0`)
+- Added deterministic pairing logic (`agent.input` -> `agent.output`) with skip accounting.
+- Added optional `--reward-mode heuristic-basic` for bootstrap reward experiments.
+- Added `docs/AGENT_LIGHTNING_BRIDGE_SPEC.md`.
+
+### Bridge dogfood completed
+- Added `scripts/smoke_agent_lightning_bridge.sh`.
+- Ran end-to-end bridge smoke on a real OpenClaw session.
+- Produced:
+  - `messages` export rows
+  - `triplets` export rows
+  - skip-accounting counters for missing/unpaired events
+- Added report: `docs/DOGFOOD_AGENT_LIGHTNING_BRIDGE_2026-02-09.md`.
+
 ### Next
-- Phase A.2: schema-level capability flags and compatibility notes.
-- Phase A.3: first replay-compatible export contract for Phase B.
+- Phase B: replay contract and deterministic A/B harness.
+- Add first Agent Lightning consumer smoke (minimal trainer-side ingestion check).

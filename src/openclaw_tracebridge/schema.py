@@ -43,6 +43,14 @@ class RunMeta(BaseModel):
     session_key: str | None = None
     source: str = "openclaw"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    capabilities: list[str] = Field(
+        default_factory=lambda: [
+            "tracebridge.event.v1",
+            "import.openclaw-session.v1",
+            "export.agent-lightning.messages.v0",
+            "export.agent-lightning.triplet.v0",
+        ]
+    )
 
 
 def new_run_id(prefix: str = "run") -> str:

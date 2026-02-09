@@ -36,7 +36,15 @@ Also, Agent Lightning installation docs currently describe official support as L
 2. Keep schema OTEL-friendly and replay-friendly.
 3. Keep payloads lean by default (`profile=lean`).
 4. Add optional `profile=debug` for deep troubleshooting.
-5. Preserve a future bridge path to external training/eval stacks, including Agent Lightning.
+5. Preserve a bridge path to external training/eval stacks, including Agent Lightning.
+
+## Updated direction (Hacking Mode pivot)
+
+We are now implementing the Agent Lightning bridge path directly:
+- `export-agent-lightning --format messages`
+- `export-agent-lightning --format triplets`
+
+This keeps runtime capture simple while still enabling algorithm-layer integration.
 
 ## License posture
 

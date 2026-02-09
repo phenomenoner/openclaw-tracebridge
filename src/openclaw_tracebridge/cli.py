@@ -6,6 +6,10 @@ from collections import Counter
 from pathlib import Path
 
 from .adapters.openclaw_session import import_openclaw_session
+from .exporters.agent_lightning import (
+    export_to_agent_lightning_messages,
+    export_to_agent_lightning_triplets,
+)
 from .io import iter_events
 from .schema import RunMeta, new_run_id
 
@@ -56,6 +60,35 @@ def _cmd_stats(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_export_agent_lightning(args: argparse.Namespace) -> int:
+    events_path = Path(args.events)
+    out_path = Path(args.out)
+
+    if args.format == "messages":
+        summary = export_to_agent_lightning_messages(events_path=events_path, out_path=out_path)
+    else:
+        summary = export_to_agent_lightning_triplets(
+            events_path=events_path,
+            out_path=out_path,
+            reward_mode=args.reward_mode,
+        )
+
+    print(
+        json.dumps(
+            {
+                "ok": True,
+                "format": summary.format,
+                "out": str(out_path),
+                "rows_written": summary.rows_written,
+                "skipped_missing_content": summary.skipped_missing_content,
+                "skipped_unpaired": summary.skipped_unpaired,
+            },
+            ensure_ascii=False,
+        )
+    )
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="openclaw-tracebridge")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -71,7 +104,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_import.add_argument("--session-jsonl", required=True)
     p_import.add_argument("--out", required=True)
     p_import.add_argument("--run-id")
-    p_import.add_argument("--profile", choices=["lean", "debug"], default="lean")
+    p_import.add_argument("--profile", choices=["lean", "bridge", "debug"], default="lean")
     p_import.add_argument("--include-content", action="store_true", help="Force include text content payload")
     p_import.add_argument("--append", action="store_true", help="Append to existing output instead of overwrite")
     p_import.add_argument("--start-sequence-id", type=int, default=1)
@@ -80,6 +113,16 @@ def build_parser() -> argparse.ArgumentParser:
     p_stats = sub.add_parser("stats", help="Summarize an events JSONL file")
     p_stats.add_argument("--events", required=True)
     p_stats.set_defaults(func=_cmd_stats)
+
+    p_export = sub.add_parser(
+        "export-agent-lightning",
+        help="Export trace events into Agent Lightning-friendly datasets",
+    )
+    p_export.add_argument("--events", required=True)
+    p_export.add_argument("--out", required=True)
+    p_export.add_argument("--format", choices=["messages", "triplets"], default="messages")
+    p_export.add_argument("--reward-mode", choices=["none", "heuristic-basic"], default="none")
+    p_export.set_defaults(func=_cmd_export_agent_lightning)
 
     return parser
 

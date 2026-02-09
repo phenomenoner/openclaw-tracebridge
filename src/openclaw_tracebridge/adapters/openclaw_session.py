@@ -129,7 +129,7 @@ def import_openclaw_session(
     seq = start_sequence_id
     count = 0
 
-    keep_content = include_content or profile == "debug"
+    keep_content = include_content or profile in {"bridge", "debug"}
 
     with session_jsonl.open("r", encoding="utf-8") as f:
         for line in f:

@@ -17,7 +17,11 @@ Start collecting useful traces immediately with minimal runtime risk.
   - `system.event`
 - Import profile controls:
   - `profile=lean` (default)
+  - `profile=bridge` (include content, no raw payload)
   - `profile=debug` (include content + raw row)
+- Phase A.2 bridge export controls:
+  - `export-agent-lightning --format messages`
+  - `export-agent-lightning --format triplets`
 
 ## Non-goals
 - No online RL loop
@@ -41,3 +45,4 @@ Start collecting useful traces immediately with minimal runtime risk.
 - Summaries include event count, rough token/cost fields (if present)
 - Correctly split key runtime rows into `tool.call`, `tool.result`, `cron.fire`, `system.event`
 - `profile=lean` avoids raw payload bloat by default
+- Bridge export writes deterministic rows for `messages` and `triplets` formats

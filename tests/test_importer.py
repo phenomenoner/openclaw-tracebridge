@@ -91,6 +91,28 @@ def test_import_openclaw_session_phase_a1_kind_split(tmp_path: Path) -> None:
     assert str(events[3].kind) == "system.event"
 
 
+def test_import_openclaw_session_bridge_profile_includes_content_only(tmp_path: Path) -> None:
+    src = tmp_path / "session_bridge.jsonl"
+    out = tmp_path / "events_bridge.jsonl"
+
+    row = {
+        "type": "message",
+        "message": {
+            "role": "assistant",
+            "content": [{"type": "text", "text": "hello bridge"}],
+        },
+    }
+    src.write_text(json.dumps(row) + "\n", encoding="utf-8")
+
+    import_openclaw_session(src, out, run_id="run_bridge", profile="bridge")
+    events = list(iter_events(out))
+
+    assert len(events) == 1
+    assert events[0].attrs.get("profile") == "bridge"
+    assert events[0].attrs.get("content") == "hello bridge"
+    assert "raw" not in events[0].attrs
+
+
 def test_import_openclaw_session_debug_profile_includes_raw(tmp_path: Path) -> None:
     src = tmp_path / "session_debug.jsonl"
     out = tmp_path / "events_debug.jsonl"
