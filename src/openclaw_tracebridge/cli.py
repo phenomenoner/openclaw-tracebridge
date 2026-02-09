@@ -12,7 +12,9 @@ from .exporters.agent_lightning import (
     export_to_agent_lightning_triplets,
 )
 from .io import iter_events
+from .optimization_loop import run_optimization_loop
 from .replay import build_replay_manifest, split_jsonl_for_replay
+from .runtime_hook import run_agent_lightning_runtime_smoke
 from .schema import RunMeta, new_run_id
 
 
@@ -161,6 +163,56 @@ def _cmd_agent_lightning_consumer_smoke(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_optimization_loop_smoke(args: argparse.Namespace) -> int:
+    report = run_optimization_loop(
+        Path(args.triplets),
+        val_ratio=args.val_ratio,
+        seed=args.seed,
+        max_rows=args.max_rows,
+    )
+    payload = {
+        "ok": True,
+        "rows_total": report.rows_total,
+        "rows_train": report.rows_train,
+        "rows_val": report.rows_val,
+        "baseline_policy": report.baseline_policy,
+        "best_policy": report.best_policy,
+        "baseline_train_reward": report.baseline_train_reward,
+        "baseline_val_reward": report.baseline_val_reward,
+        "best_train_reward": report.best_train_reward,
+        "best_val_reward": report.best_val_reward,
+        "uplift_val_abs": report.uplift_val_abs,
+        "uplift_val_pct": report.uplift_val_pct,
+    }
+
+    if args.out:
+        out_path = Path(args.out)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        payload["out"] = str(out_path)
+
+    print(json.dumps(payload, ensure_ascii=False))
+    return 0
+
+
+def _cmd_agent_lightning_runtime_smoke(args: argparse.Namespace) -> int:
+    summary = run_agent_lightning_runtime_smoke(Path(args.input), max_rows=args.max_rows)
+    payload = {
+        "ok": summary.ok,
+        "installed": summary.installed,
+        "reason": summary.reason,
+        "rows_total": summary.rows_total,
+        "rows_used": summary.rows_used,
+        "spans_written": summary.spans_written,
+        "rollout_id": summary.rollout_id,
+    }
+    print(json.dumps(payload, ensure_ascii=False))
+
+    if args.strict and not summary.ok:
+        return 2
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="openclaw-tracebridge")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -221,6 +273,26 @@ def build_parser() -> argparse.ArgumentParser:
     p_consumer.add_argument("--max-rows", type=int)
     p_consumer.add_argument("--strict", action="store_true", help="Exit non-zero when validation fails")
     p_consumer.set_defaults(func=_cmd_agent_lightning_consumer_smoke)
+
+    p_opt = sub.add_parser(
+        "optimization-loop-smoke",
+        help="Run a measurable baseline-vs-optimized reward loop on triplets",
+    )
+    p_opt.add_argument("--triplets", required=True)
+    p_opt.add_argument("--val-ratio", type=float, default=0.2)
+    p_opt.add_argument("--seed", type=int, default=42)
+    p_opt.add_argument("--max-rows", type=int)
+    p_opt.add_argument("--out")
+    p_opt.set_defaults(func=_cmd_optimization_loop_smoke)
+
+    p_runtime = sub.add_parser(
+        "agent-lightning-runtime-smoke",
+        help="Run optional runtime-side smoke using agentlightning InMemoryLightningStore",
+    )
+    p_runtime.add_argument("--input", required=True, help="messages dataset jsonl")
+    p_runtime.add_argument("--max-rows", type=int, default=10)
+    p_runtime.add_argument("--strict", action="store_true", help="Exit non-zero when runtime smoke fails")
+    p_runtime.set_defaults(func=_cmd_agent_lightning_runtime_smoke)
 
     return parser
 

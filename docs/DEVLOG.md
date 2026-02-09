@@ -93,6 +93,25 @@
   - import -> export -> replay split -> consumer strict checks.
 - Added report: `docs/DOGFOOD_END2END_2026-02-09.md`.
 
+### Close-gap: real optimization loop smoke
+- Added `optimization-loop-smoke` CLI command:
+  - deterministic train/val split over triplets
+  - baseline (`identity`) vs policy-search (`sanitize_errors`, `safe_rewrite`, `short_safe`)
+  - measurable validation uplift outputs
+- Added `agent-lightning-runtime-smoke` CLI command:
+  - optional runtime-side smoke against `agentlightning` + `InMemoryLightningStore`
+  - emits synthetic spans and reward annotations
+  - strict fail mode supported
+- Added one-shot script:
+  - `scripts/run_real_optimization_loop_smoke.sh`
+- Added docs:
+  - `docs/REAL_OPTIMIZATION_LOOP.md`
+- Ran close-gap smoke end-to-end:
+  - validation uplift observed: `+0.10` reward (`+14.9%`)
+  - runtime smoke spans written: `36`
+- Added report:
+  - `docs/DOGFOOD_REAL_OPT_LOOP_2026-02-09.md`
+
 ### Next
 - Wire replay outputs into benchmark-style A/B reporting.
-- Add first minimal Agent Lightning runtime-side training hook smoke (optional env, fail-fast fallback).
+- Add richer policy families and task-specific rewards beyond keyword heuristics.

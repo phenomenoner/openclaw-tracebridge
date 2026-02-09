@@ -61,7 +61,8 @@ We call bridge MVP-ready when:
 1. `messages` export works on real OpenClaw runs.
 2. `triplets` export works with deterministic reward mode behavior.
 3. At least one Agent Lightning smoke workflow can consume exported artifacts end-to-end.
-4. Documentation includes limitations and integration boundaries.
+4. A measurable baseline-vs-optimized optimization-loop smoke exists.
+5. Documentation includes limitations and integration boundaries.
 
 ## Non-goals (v0)
 - No claim of one-click RL quality from arbitrary logs.
