@@ -47,6 +47,15 @@ uv run --python 3.13 --group dev openclaw-tracebridge replay-split \
   --out-a traces/<run>/replay_a.jsonl \
   --out-b traces/<run>/replay_b.jsonl \
   --seed 42 --split-ratio 0.5
+
+# trainer-side shape smoke check (strict exits non-zero on bad rows)
+uv run --python 3.13 --group dev openclaw-tracebridge agent-lightning-consumer-smoke \
+  --input traces/<run>/agent_lightning_messages.jsonl \
+  --format messages \
+  --strict
+
+# full end-to-end smoke
+bash scripts/smoke_end_to_end_lightning.sh
 ```
 
 ## Docs
@@ -57,8 +66,10 @@ uv run --python 3.13 --group dev openclaw-tracebridge replay-split \
 - Landscape + rationale: `docs/LANDSCAPE_AND_RATIONALE.md`
 - Agent Lightning bridge spec: `docs/AGENT_LIGHTNING_BRIDGE_SPEC.md`
 - Agent Lightning bridge dogfood: `docs/DOGFOOD_AGENT_LIGHTNING_BRIDGE_2026-02-09.md`
+- End-to-end dogfood: `docs/DOGFOOD_END2END_2026-02-09.md`
 - Agent Lightning usage research snapshot: `docs/RESEARCH_AGENT_LIGHTNING_USAGE.md`
 - Replay contract v0: `docs/REPLAY_CONTRACT_V0.md`
+- Consumer smoke spec: `docs/AGENT_LIGHTNING_CONSUMER_SMOKE.md`
 
 ## Status
 

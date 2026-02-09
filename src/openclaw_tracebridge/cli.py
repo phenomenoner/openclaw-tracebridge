@@ -6,6 +6,7 @@ from collections import Counter
 from pathlib import Path
 
 from .adapters.openclaw_session import import_openclaw_session
+from .consumer_smoke import smoke_check_messages, smoke_check_triplets
 from .exporters.agent_lightning import (
     export_to_agent_lightning_messages,
     export_to_agent_lightning_triplets,
@@ -127,6 +128,39 @@ def _cmd_replay_manifest(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_agent_lightning_consumer_smoke(args: argparse.Namespace) -> int:
+    in_path = Path(args.input)
+    if args.format == "messages":
+        summary = smoke_check_messages(in_path, max_rows=args.max_rows)
+        payload = {
+            "ok": summary.rows_bad == 0 and summary.rows_total > 0,
+            "format": summary.format,
+            "rows_total": summary.rows_total,
+            "rows_ok": summary.rows_ok,
+            "rows_bad": summary.rows_bad,
+            "sample_ids": summary.sample_ids,
+            "avg_user_chars": summary.avg_user_chars,
+            "avg_assistant_chars": summary.avg_assistant_chars,
+        }
+    else:
+        summary = smoke_check_triplets(in_path, max_rows=args.max_rows)
+        payload = {
+            "ok": summary.rows_bad == 0 and summary.rows_total > 0,
+            "format": summary.format,
+            "rows_total": summary.rows_total,
+            "rows_ok": summary.rows_ok,
+            "rows_bad": summary.rows_bad,
+            "sample_ids": summary.sample_ids,
+            "avg_state_chars": summary.avg_state_chars,
+            "avg_action_chars": summary.avg_action_chars,
+        }
+
+    print(json.dumps(payload, ensure_ascii=False))
+    if args.strict and not payload["ok"]:
+        return 2
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="openclaw-tracebridge")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -177,6 +211,16 @@ def build_parser() -> argparse.ArgumentParser:
     p_manifest.add_argument("--input", required=True)
     p_manifest.add_argument("--out", required=True)
     p_manifest.set_defaults(func=_cmd_replay_manifest)
+
+    p_consumer = sub.add_parser(
+        "agent-lightning-consumer-smoke",
+        help="Validate exported dataset shape with a lightweight trainer-side smoke check",
+    )
+    p_consumer.add_argument("--input", required=True)
+    p_consumer.add_argument("--format", choices=["messages", "triplets"], default="messages")
+    p_consumer.add_argument("--max-rows", type=int)
+    p_consumer.add_argument("--strict", action="store_true", help="Exit non-zero when validation fails")
+    p_consumer.set_defaults(func=_cmd_agent_lightning_consumer_smoke)
 
     return parser
 

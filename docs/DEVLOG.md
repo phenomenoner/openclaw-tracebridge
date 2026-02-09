@@ -77,6 +77,22 @@
 - Added replay module and tests.
 - Added `docs/REPLAY_CONTRACT_V0.md`.
 
+### Agent Lightning consumer smoke added
+- Added `agent-lightning-consumer-smoke` CLI command:
+  - validates `messages` and `triplets` dataset shapes
+  - strict fail mode for CI/automation
+- Added end-to-end smoke script:
+  - `scripts/smoke_end_to_end_lightning.sh`
+  - import -> export -> replay split -> consumer checks
+- Added docs:
+  - `docs/AGENT_LIGHTNING_CONSUMER_SMOKE.md`
+
+### End-to-end smoke completed
+- Added and ran `scripts/smoke_end_to_end_lightning.sh`.
+- Verified full path:
+  - import -> export -> replay split -> consumer strict checks.
+- Added report: `docs/DOGFOOD_END2END_2026-02-09.md`.
+
 ### Next
-- Add first Agent Lightning consumer smoke (minimal trainer-side ingestion check).
 - Wire replay outputs into benchmark-style A/B reporting.
+- Add first minimal Agent Lightning runtime-side training hook smoke (optional env, fail-fast fallback).
